@@ -1,0 +1,9 @@
+[workspace]
+members = [
+  "add",
+]
+
+[profile.release]
+codegen-units = 1
+lto = true
+panic = "abort"

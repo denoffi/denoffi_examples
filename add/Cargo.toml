@@ -1,0 +1,14 @@
+[package]
+name = "add"
+version = "0.1.0"
+authors = ["迷渡 <justjavac@gmail.com>"]
+edition = "2018"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+codegen-units = 1
+lto = true
+panic = "abort"
