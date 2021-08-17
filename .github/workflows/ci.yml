@@ -57,6 +57,12 @@ jobs:
           restore-keys: |
             ${{ matrix.config.os }}-
 
+      - name: Run deno fmt
+        run: deno fmt --check
+
+      - name: Run deno lint
+        run: deno lint
+
       - name: Run cargo fmt
         run: cargo fmt --all -- --check
 
@@ -71,12 +77,6 @@ jobs:
 
       - name: Run cargo build
         run: cargo build --locked
-
-      - name: Run deno fmt
-        run: deno fmt --check
-
-      - name: Run deno lint
-        run: deno lint
 
       - name: Run deno test
         run: deno test --allow-ffi --allow-read --unstable
