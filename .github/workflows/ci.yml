@@ -15,12 +15,16 @@ jobs:
         'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')) }}
 
     env:
-      CARGO_INCREMENTAL: 0
+      CARGO_TERM_COLOR: always
       RUST_BACKTRACE: full
+      RUSTC_FORCE_INCREMENTAL: 1
 
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
 
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
@@ -37,10 +41,13 @@ jobs:
         run: |
           rustup component add clippy
           rustup component add rustfmt
+
       - name: Log versions
         run: |
           rustc --version
           cargo --version
+          deno --version
+
       - name: Cache
         uses: actions/cache@v2
         with:
@@ -52,8 +59,11 @@ jobs:
             ${{ matrix.config.os }}-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
             ${{ matrix.config.os }}-
-      - name: Run cargo fmt
-        run: cargo fmt --all -- --check
+
+      - name: Run fmt
+        run: |
+          cargo fmt --all -- --check
+          deno fmt --check
 
       - name: Run cargo check
         run: cargo check --locked
@@ -61,20 +71,13 @@ jobs:
       - name: Run cargo clippy
         run: cargo clippy -- -D warnings
 
-      - name: Build release
-        run: cargo build --release --locked
+      - name: Run deno lint
+        run: deno lint
 
       - name: Run cargo test
         run: cargo test --locked
 
-      - uses: actions/checkout@v2
-      - uses: denoland/setup-deno@v1
-
-      - name: Run deno fmt
-        run: deno fmt --check
-
-      - name: Run deno lint
-        run: deno lint
-
-      - name: Run deno test
-        run: deno test --allow-ffi --allow-read --unstable
+      - name: Build & Test
+        run: |
+          cargo build --locked
+          deno test --allow-ffi --allow-read --unstable
