@@ -46,17 +46,6 @@ jobs:
           cargo --version
           deno --version
 
-      - name: Cache
-        uses: actions/cache@v2
-        with:
-          path: |-
-            target/*/.*
-            target/*/build
-            target/*/deps
-          key: ${{ matrix.config.os }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            ${{ matrix.config.os }}-
-
       - name: Run deno fmt
         run: deno fmt --check
 
