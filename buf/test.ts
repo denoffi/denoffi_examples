@@ -7,7 +7,10 @@ Deno.test("buf", () => {
   });
 
   const buffer = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]);
-  const result = lib.symbols.print_buffer(buffer, buffer.length as unknown as bigint);
+  const result = lib.symbols.print_buffer(
+    buffer,
+    buffer.length as unknown as bigint,
+  );
 
   assertEquals(result, undefined);
 
